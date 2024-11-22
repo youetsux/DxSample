@@ -1,5 +1,6 @@
 #include "DxLib.h"
 #include "Input.h"
+#include "deque"
 
 namespace
 {
@@ -8,6 +9,94 @@ namespace
 	int crrTime;
 	int prevTime;
 }
+
+enum DIR
+{
+	UP, LEFT, DOWN, RIGHT, NONE, MAXDIR
+};
+
+struct pos
+{
+	int x;
+	int y;
+};
+
+class sbody
+{
+	pos spos;
+	DIR fwrdDir;
+public:
+	sbody();
+	sbody(int x, int y);
+	void SetPosition(int x, int y);
+	pos GetPosition();
+	void SetForward(DIR dir) { fwrdDir = dir; };
+	DIR GetFoward() { return fwrdDir; };
+	DIR GetBakward() { return (DIR)((fwrdDir + 2) % 4); };
+};
+sbody::sbody()
+{
+	spos = { 0, 0 };
+}
+
+sbody::sbody(int x, int y)
+{
+	spos = { x, y };
+}
+
+void sbody::SetPosition(int x, int y)
+{
+	spos = { x, y };
+}
+
+pos sbody::GetPosition()
+{
+	return spos;
+}
+
+
+
+
+class snake
+{
+	std::deque<sbody> body;
+public:
+	snake();
+	void AddBody(DIR dir);
+	void Move();
+	void Update();
+	void Draw();
+	DIR GetFwrdDir() { body.front(); };
+};
+
+snake::snake()
+{
+}
+
+void snake::AddBody(DIR dir)
+{
+	DIR topDir = body.front().GetFoward();
+	body.push_front({});
+}
+
+void snake::Move()
+{
+}
+
+void snake::Update()
+{
+}
+
+void snake::Draw()
+{
+}
+
+
+
+
+void Init();
+void Update(float dTime);
+void Draw(float dTime);
 
 
 void DxInit()
@@ -56,6 +145,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		
 
 
+
+
 		DrawFormatString(20, 50, GetColor(0, 0, 0), "%lf", deltaTime);
 		ScreenFlip();
 		WaitTimer(16);
@@ -70,3 +161,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	DxLib_End();
 	return 0;
 }
+
+void Init()
+{
+}
+
+void Update(float dTime)
+{
+}
+
+void Draw(float dTime)
+{
+}
+
