@@ -1,9 +1,9 @@
 #include "DxLib.h"
 #include "Input.h"
 #include "deque"
+#include <vector>
 
 class snake;
-
 namespace
 {
 	const int WIN_WIDTH = 1024;
@@ -13,7 +13,9 @@ namespace
 	float deltaTime;
 
 	int BOXSIZE{ 30 };
-	snake* s;
+
+	const int STAGEW = WIN_WIDTH / BOXSIZE;
+	const int STAGEH = WIN_HEIGHT / BOXSIZE;
 }
 
 enum DIR
@@ -175,20 +177,61 @@ void snake::Draw()
 }
 
 
-enum TYPE_FLUItS
+
+	
+
+class fluits
 {
-	APPLE,
-	STRAWBERRY,
-	BANANA,
-	MELON,
-	MAX_FLUITS
-};
-class fruits
-{
+	enum FLUIT_TYPE
+	{
+		APPLE,
+		STRAWBERRY,
+		BANANA,
+		MELON,
+		MAX_FLUITS
+	}type;
+	std::vector<unsigned int> fcolor{ GetColor(255, 50,50), GetColor(187, 85, 97),GetColor(255,225,53), GetColor(224,222,148) };
+public:
+	fluits():isActive(false){}
+	~fluits(){}
 	pos position;
-	int kind;//フルーツの種類
+	//type;//フルーツの種類
+	int color;
+	void SetType() {
+		type = (FLUIT_TYPE)(rand() % MAX_FLUITS);
+		color = fcolor[type];
+	}
+	void SetPosition(int x, int y) { position.x = x; position.y = y; }
+	bool isActive;
+	void SetFluits()
+	{
+		if (isActive == true)
+			return;
+		int rw = rand() % STAGEW;
+		int rh = rand() % STAGEH;
+		SetPosition(rw, rh);
+		SetType();
+		isActive = true;
+	}
+
+	void Init() { SetFluits(); }
+	void Update();
+	void Draw()
+	{
+		DrawBox(position.x * BOXSIZE, position.y * BOXSIZE, (position.x + 1) * BOXSIZE, (position.y + 1) * BOXSIZE,
+			    color, TRUE);
+		DrawBox(position.x * BOXSIZE, position.y * BOXSIZE, (position.x + 1) * BOXSIZE, (position.y + 1) * BOXSIZE,
+			    GetColor(0, 0, 0), FALSE);
+	}
 };
 
+
+
+namespace
+{
+	fluits f;
+	snake s;
+}
 
 void Init();
 void Update(float dTime);
@@ -227,7 +270,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	crrTime = GetNowCount();
 	prevTime = GetNowCount();
 
-	s = new snake();
+	//s = new snake();
 	while (true)
 	{
 		ClearDrawScreen();
@@ -241,6 +284,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		Draw(deltaTime);
 
 		DrawFormatString(20, 50, GetColor(0, 0, 0), "%lf", deltaTime);
+		DrawFormatString(20, 130, GetColor(0, 0, 0), "%4d, %4d", STAGEW, STAGEH);
 		ScreenFlip();
 		WaitTimer(16);
 
@@ -257,11 +301,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 void Init()
 {
+	f.Init();
 }
 
 void Update(float dTime)
 {
-	s->Update(dTime);
+	s.Update(dTime);
 }
 
 void Draw(float dTime)
@@ -271,8 +316,8 @@ void Draw(float dTime)
 		for (int i = 0; i < WIN_WIDTH; i += BOXSIZE) {
 			DrawBox(i, j, i + BOXSIZE, j + BOXSIZE, GetColor(200, 200, 200), FALSE);
 		}
-
 	}
-	s->Draw();
+	f.Draw();
+	s.Draw();
 }
 
