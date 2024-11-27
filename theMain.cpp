@@ -64,8 +64,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		MyGame.Update(deltaTime);
 		MyGame.Draw(deltaTime);
 
-		DrawFormatString(20, 50, GetColor(0, 0, 0), "%lf", deltaTime);
-		DrawFormatString(20, 130, GetColor(0, 0, 0), "%4d, %4d", STAGEW, STAGEH);
+		//DrawFormatString(20, 50, GetColor(0, 0, 0), "%lf", deltaTime);
+		//DrawFormatString(20, 130, GetColor(0, 0, 0), "%4d, %4d", STAGEW, STAGEH);
 		ScreenFlip();
 		WaitTimer(16);
 

@@ -77,11 +77,30 @@ void Game::TitleUpdate(float delta)
 
 void Game::TitleDraw(float delta)
 {
+	int k = 0;
+	for (int j = 0; j < WIN_HEIGHT; j += BOXSIZE) {
+		for (int i = 0; i < WIN_WIDTH; i += BOXSIZE) {
+			float ratio = j / (float)WIN_HEIGHT;
+			int col = 100 + (int)(100 * ratio);
+			if(k % 2)
+				DrawBox(i, j, i + BOXSIZE, j + BOXSIZE, GetColor(200, 200, 200), FALSE);
+			else
+				DrawBox(i, j, i + BOXSIZE, j + BOXSIZE, GetColor(col,col,col), TRUE);
+			k++;
+		}
+	}
 	const int Margin = 80;
 	int tSize = (std::min)(WIN_WIDTH - WIN_WIDTH%100, WIN_HEIGHT - WIN_HEIGHT % 100);
-	DrawExtendGraph(WIN_WIDTH/2 - tSize/2, WIN_HEIGHT / 2 - tSize / 2 - Margin, WIN_WIDTH / 2 + tSize / 2, WIN_HEIGHT / 2 + tSize / 2 - Margin,hTitleImage, TRUE);
+	static float dt = 0;
+	float s = sin(dt);
+	float st = sin(dt / 2);
+	DrawExtendGraph(WIN_WIDTH/2 - tSize/2 + 50 * s, WIN_HEIGHT / 2 - tSize / 2 - Margin - 30 * st, 
+		                WIN_WIDTH / 2 + tSize / 2 + 50*s, WIN_HEIGHT / 2 + tSize / 2 - Margin - 30 * st,hTitleImage, TRUE);
 	SetFontSize(50);
-	DrawString(300, WIN_HEIGHT / 2 + tSize / 2-100, "Push Space Key !", GetColor(255,0,0), GetColor(0,0,0));
+	SetFontThickness(9);
+	DrawString(303, WIN_HEIGHT / 2 + tSize / 2-97, "Push Space Key !", GetColor(0,0,0));
+	DrawString(300, WIN_HEIGHT / 2 + tSize / 2 - 100, "Push Space Key !", GetColor(255, 0, 0));
+	dt += delta;
 }
 
 
