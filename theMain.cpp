@@ -42,7 +42,7 @@ public:
 	sbody(int x, int y);
 	void SetPosition(int x, int y);
 	pos GetPosition();
-	void SetForward(DIR dir) { fwrdDir = dir; }
+	void SetForward(DIR dir) { if(dir != NONE)fwrdDir = dir; }
 	DIR GetFoward() { return fwrdDir; }
 	DIR GetBakward() { return (DIR)((fwrdDir + 2) % 4); }
 };
@@ -75,9 +75,10 @@ class snake
 		INIT, PLAY, MOVE, STOP, DEATH, MAXSSTATE
 	}sstate;
 	float sdelta;//é÷ÇÃÉ¢t
-	bool isEate;
+	bool isAte;
 public:
 	snake();
+	void Eat() { isAte = true; }
 	void AddBody(DIR dir);
 	void Move();
 	void Update(float delta);
@@ -96,7 +97,7 @@ snake::snake()
 	}
 	sstate = INIT;
 	sdelta = 0;
-	isEate = false;
+	isAte = false;
 }
 
 //é©ï™Ç™ìÆÇ¢ÇΩÇ†Ç∆Ç…ÇPå¬ëùÇ¶ÇÈ
@@ -127,40 +128,40 @@ void snake::Update(float delta)
 		b.SetPosition(fpos.x + dirs[d].x, fpos.y + dirs[d].y);
 		b.SetForward(d);
 		body.push_front(b);
-		if (!isEate) {
+		if (!isAte) {
 			body.pop_back();
 		}
 		else
 		{
-			isEate = false;
+			isAte = false;
 		}
 		sdelta = sdelta - refreshRate;
 	}
 
+	DIR inputDir = NONE;
 	if (Input::IsKeyDown(KEY_INPUT_UP))
 	{
-		sbody &b = body.front();
-		b.SetForward(UP);
+		inputDir = UP;
 	}
 	if (Input::IsKeyDown(KEY_INPUT_LEFT))
 	{
-		sbody &b = body.front();
-		b.SetForward(LEFT);
+		inputDir = LEFT;
 	}
 	if (Input::IsKeyDown(KEY_INPUT_DOWN))
 	{
-		sbody &b = body.front();
-		b.SetForward(DOWN);
+		inputDir = DOWN;
 	}
 	if (Input::IsKeyDown(KEY_INPUT_RIGHT))
 	{
-		sbody &b = body.front();
-		b.SetForward(RIGHT);
+		inputDir = RIGHT;
 	}
-	if (Input::IsKeyDown(KEY_INPUT_SPACE))
-	{
-		isEate = true;
-	}
+	sbody& b = body.front();
+	if(inputDir != b.GetBakward())
+		b.SetForward(inputDir);
+	//if (Input::IsKeyDown(KEY_INPUT_SPACE))
+	//{
+	//	isEate = true;
+	//}
 
 	sdelta = sdelta + delta;
 }
@@ -172,7 +173,7 @@ void snake::Draw()
 		pos p = itr.GetPosition();
 		DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 255, 0), TRUE);
 		DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 0, 255), FALSE);
-		DrawFormatString(20, 80, GetColor(0, 0, 0), "%d", isEate);
+		DrawFormatString(20, 80, GetColor(0, 0, 0), "%d", isAte);
 	}
 }
 
@@ -213,9 +214,15 @@ public:
 		SetType();
 		isActive = true;
 	}
-
+	void Eat() { isActive = false; }
 	void Init() { SetFluits(); }
-	void Update();
+	void Update()
+	{
+		if (!isActive)
+		{
+			SetFluits();
+		}
+	}
 	void Draw()
 	{
 		DrawBox(position.x * BOXSIZE, position.y * BOXSIZE, (position.x + 1) * BOXSIZE, (position.y + 1) * BOXSIZE,
@@ -306,6 +313,12 @@ void Init()
 
 void Update(float dTime)
 {
+	if (Input::IsKeyDown(KEY_INPUT_SPACE))
+	{
+		f.Eat();
+		s.Eat();
+	}
+	f.Update();
 	s.Update(dTime);
 }
 
