@@ -41,6 +41,9 @@ void Game::Update(float delta)
 	case Game::PLAY:
 		PlayUpdate(delta);
 		break;
+	case Game::START:
+		StartUpdate(delta);
+		break;
 	case Game::GAMEOVER:
 		GameOverUpdate(delta);
 		break;
@@ -58,6 +61,9 @@ void Game::Draw(float delta)
 		break;
 	case Game::PLAY:
 		PlayDraw(delta);
+		break;
+	case Game::START:
+		StartDraw(delta);
 		break;
 	case Game::GAMEOVER:
 		GameOverDraw(delta);
@@ -106,6 +112,43 @@ void Game::TitleDraw(float delta)
 
 void Game::StartUpdate(float delta)
 {
+	const float binterval = 0.3f;
+	static float stime = 0;
+	static float blinktime = 0;
+	int k = 0;
+	for (int j = 0; j < WIN_HEIGHT; j += BOXSIZE) {
+		for (int i = 0; i < WIN_WIDTH; i += BOXSIZE) {
+			float ratio = j / (float)WIN_HEIGHT;
+			int col = 100 + (int)(100 * ratio);
+			if (k % 2)
+				DrawBox(i, j, i + BOXSIZE, j + BOXSIZE, GetColor(200, 200, 200), FALSE);
+			else
+				DrawBox(i, j, i + BOXSIZE, j + BOXSIZE, GetColor(col, col, col), TRUE);
+			k++;
+		}
+	}
+	const int Margin = 80;
+	int tSize = (std::min)(WIN_WIDTH - WIN_WIDTH % 100, WIN_HEIGHT - WIN_HEIGHT % 100);
+	static float dt = 0;
+	float s = sin(dt);
+	float st = sin(dt / 2);
+	DrawExtendGraph(WIN_WIDTH / 2 - tSize / 2 + 50 * s, WIN_HEIGHT / 2 - tSize / 2 - Margin - 30 * st,
+		WIN_WIDTH / 2 + tSize / 2 + 50 * s, WIN_HEIGHT / 2 + tSize / 2 - Margin - 30 * st, hTitleImage, TRUE);
+
+	if (blinktime > binterval)
+		blinktime = blinktime - binterval;
+	float tRatio = blinktime / binterval;
+
+	SetFontSize(50);
+	SetFontThickness(9);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)(tRatio*255));
+	DrawString(303, WIN_HEIGHT / 2 + tSize / 2 - 97, "Push Space Key !", GetColor(0, 0, 0));
+	DrawString(300, WIN_HEIGHT / 2 + tSize / 2 - 100, "Push Space Key !", GetColor(255, 0, 0));
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	blinktime += delta;
+	stime += delta;
+	if (stime > 2.0f)
+		gs = PLAY;
 }
 
 void Game::StartDraw(float delta)
