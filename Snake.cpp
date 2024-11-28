@@ -3,9 +3,11 @@
 #include "Input.h"
 #include <string>
 
+namespace {
+	int hCountImage[4]{ -1,-1,-1,-1 };
+	pos dirs[] = { {0,-1},{-1, 0}, {0, 1}, {1, 0}, {0, 0} };
 
-pos dirs[] = { {0,-1},{-1, 0}, {0, 1}, {1, 0}, {0, 0} };
-
+}
 Snake::Snake()
 {
 	for (int i = 0; i < 5; i++)
@@ -18,8 +20,17 @@ Snake::Snake()
 	sstate = INIT;
 	sdelta = 0;
 	isAte = false;
+
 }
 
+
+void Snake::Init()
+{
+	hCountImage[0] = LoadGraph("Image\\go.png");
+	hCountImage[1] = LoadGraph("Image\\ichi.png");
+	hCountImage[2] = LoadGraph("Image\\ni.png");
+	hCountImage[3] = LoadGraph("Image\\san.png");
+}
 //Ž©•ª‚ª“®‚¢‚½‚ ‚Æ‚É‚PŒÂ‘‚¦‚é
 void Snake::AddBody(DIR dir)
 {
@@ -153,9 +164,13 @@ void Snake::InitUpdate(float delta)
 	}
 	if (cdtimer > 0)
 	{
-		std::string mess[4] = { "GO!","1","2","3" };
-		if((int)cdtimer < 4)
-			DrawFormatString(WIN_WIDTH / 2, WIN_HEIGHT / 2, GetColor(255, 0, 0), "%s", mess[(int)cdtimer].c_str());
+		//std::string mess[4] = { "GO!","1","2","3" };
+		const int numw = 150;
+		const int numh = 200;
+		if ((int)cdtimer < 4)
+			DrawExtendGraph(WIN_WIDTH/2-numw/2, WIN_HEIGHT/2-numh/2, 
+				            WIN_WIDTH / 2 + numw / 2, WIN_HEIGHT / 2 + numh / 2, hCountImage[(int)cdtimer], TRUE);
+			//DrawFormatString(WIN_WIDTH / 2, WIN_HEIGHT / 2, GetColor(255, 0, 0), "%s", mess[(int)cdtimer].c_str());
 		cdtimer = cdtimer - delta;
 	}
 	else

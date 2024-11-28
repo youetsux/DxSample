@@ -16,6 +16,7 @@ class Snake
 	bool deathBlend = false;
 public:
 	Snake();
+	void Init();
 	void Eat() { isAte = true; }
 	void AddBody(DIR dir);
 	void Move();

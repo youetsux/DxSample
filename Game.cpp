@@ -27,6 +27,8 @@ Game::~Game()
 void Game::Init()
 {
 	hTitleImage = LoadGraph("Image\\Title.png");
+	s.Init();
+
 	gs = TITLE;
 	f.Init();
 }
@@ -168,9 +170,11 @@ void Game::PlayUpdate(float delta)
 
 void Game::PlayDraw(float delta)
 {
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	DrawStage(delta);
 	f.Draw();
 	s.Draw();
+	
 }
 
 void Game::DrawStage(float delta)
