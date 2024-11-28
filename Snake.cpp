@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include "Snake.h"
 #include "Input.h"
+#include <string>
 
 
 pos dirs[] = { {0,-1},{-1, 0}, {0, 1}, {1, 0}, {0, 0} };
@@ -14,7 +15,7 @@ Snake::Snake()
 		bd.SetForward(RIGHT);
 		body.push_back(bd);
 	}
-	sstate = PLAY;
+	sstate = INIT;
 	sdelta = 0;
 	isAte = false;
 }
@@ -32,6 +33,9 @@ void Snake::Update(float delta)
 {
 	switch (sstate)
 	{
+	case INIT:
+		InitUpdate(delta);
+		break;
 	case PLAY:
 		PlayUpdate(delta);
 		break;
@@ -46,6 +50,28 @@ void Snake::Update(float delta)
 
 void Snake::PlayUpdate(float delta)
 {
+
+	DIR inputDir = NONE;
+	if (Input::IsKeyDown(KEY_INPUT_UP))
+	{
+		inputDir = UP;
+	}
+	if (Input::IsKeyDown(KEY_INPUT_LEFT))
+	{
+		inputDir = LEFT;
+	}
+	if (Input::IsKeyDown(KEY_INPUT_DOWN))
+	{
+		inputDir = DOWN;
+	}
+	if (Input::IsKeyDown(KEY_INPUT_RIGHT))
+	{
+		inputDir = RIGHT;
+	}
+	Sbody& b = body.front();
+	if (inputDir != b.GetBakward())
+		b.SetForward(inputDir);
+
 	const float refreshRate = 0.3f;
 	//‚Ö‚Ñ‚ð‘O‚Éi‚ß‚é
 	if (sdelta > refreshRate)
@@ -77,26 +103,6 @@ void Snake::PlayUpdate(float delta)
 		sdelta = sdelta - refreshRate;
 	}
 
-	DIR inputDir = NONE;
-	if (Input::IsKeyDown(KEY_INPUT_UP))
-	{
-		inputDir = UP;
-	}
-	if (Input::IsKeyDown(KEY_INPUT_LEFT))
-	{
-		inputDir = LEFT;
-	}
-	if (Input::IsKeyDown(KEY_INPUT_DOWN))
-	{
-		inputDir = DOWN;
-	}
-	if (Input::IsKeyDown(KEY_INPUT_RIGHT))
-	{
-		inputDir = RIGHT;
-	}
-	Sbody& b = body.front();
-	if (inputDir != b.GetBakward())
-		b.SetForward(inputDir);
 
 	sdelta = sdelta + delta;
 }
@@ -131,6 +137,32 @@ void Snake::DeathUpdate(float delta)
 		sstate = STOP;
 	}
 }
+//Draw‚ÆUpdate‚²‚Á‚¿‚á‚É‚È‚Á‚Ä‚é
+void Snake::InitUpdate(float delta)
+{
+	static float cdtimer = 4.0f;
+	if (sstate == STOP)
+		return;
+	for (auto& itr : body)
+	{
+		pos p = itr.GetPosition();
+		if (!deathBlend)
+			DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 255, 0), TRUE);
+		DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 0, 255), FALSE);
+		//DrawFormatString(20, 80, GetColor(0, 0, 0), "%d", sstate);
+	}
+	if (cdtimer > 0)
+	{
+		std::string mess[4] = { "GO!","1","2","3" };
+		if((int)cdtimer < 4)
+			DrawFormatString(WIN_WIDTH / 2, WIN_HEIGHT / 2, GetColor(255, 0, 0), "%s", mess[(int)cdtimer].c_str());
+		cdtimer = cdtimer - delta;
+	}
+	else
+	{
+		sstate = PLAY;
+	}
+}
 
 void Snake::Draw()
 {
@@ -142,6 +174,6 @@ void Snake::Draw()
 		if(!deathBlend)
 			DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 255, 0), TRUE);
 		DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 0, 255), FALSE);
-		DrawFormatString(20, 80, GetColor(0, 0, 0), "%d", sstate);
+		//DrawFormatString(20, 80, GetColor(0, 0, 0), "%d", sstate);
 	}
 }

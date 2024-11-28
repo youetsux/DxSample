@@ -22,6 +22,7 @@ public:
 	void Update(float delta);
 	void PlayUpdate(float delta);
 	void DeathUpdate(float delta);
+	void InitUpdate(float delta);
 	void Draw();
 	DIR GetFwrdDir() { body.front().GetFoward(); };
 
