@@ -159,13 +159,14 @@ void Game::StartDraw(float delta)
 
 void Game::PlayUpdate(float delta)
 {
-	if (Input::IsKeyDown(KEY_INPUT_SPACE))
+
+	f.Update();
+	s.Update(delta);
+	if (f.position.x == s.GetHeadPos().x && f.position.y == s.GetHeadPos().y)
 	{
 		f.Eat();
 		s.Eat();
 	}
-	f.Update();
-	s.Update(delta);
 }
 
 void Game::PlayDraw(float delta)
@@ -173,7 +174,7 @@ void Game::PlayDraw(float delta)
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	DrawStage(delta);
 	f.Draw();
-	s.Draw();
+	s.Draw(delta);
 	
 }
 
@@ -194,3 +195,4 @@ void Game::GameOverUpdate(float delta)
 void Game::GameOverDraw(float delta)
 {
 }
+

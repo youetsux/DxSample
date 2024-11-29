@@ -6,7 +6,7 @@
 namespace {
 	int hCountImage[4]{ -1,-1,-1,-1 };
 	pos dirs[] = { {0,-1},{-1, 0}, {0, 1}, {1, 0}, {0, 0} };
-
+	int ReadyCount = -1;
 }
 Snake::Snake()
 {
@@ -20,7 +20,6 @@ Snake::Snake()
 	sstate = INIT;
 	sdelta = 0;
 	isAte = false;
-
 }
 
 
@@ -83,7 +82,7 @@ void Snake::PlayUpdate(float delta)
 	if (inputDir != b.GetBakward())
 		b.SetForward(inputDir);
 
-	const float refreshRate = 0.3f;
+	const float refreshRate = 0.2f;
 	//‚Ö‚Ñ‚ğ‘O‚Éi‚ß‚é
 	if (sdelta > refreshRate)
 	{
@@ -154,23 +153,10 @@ void Snake::InitUpdate(float delta)
 	static float cdtimer = 4.0f;
 	if (sstate == STOP)
 		return;
-	for (auto& itr : body)
-	{
-		pos p = itr.GetPosition();
-		if (!deathBlend)
-			DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 255, 0), TRUE);
-		DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 0, 255), FALSE);
-		//DrawFormatString(20, 80, GetColor(0, 0, 0), "%d", sstate);
-	}
+	
 	if (cdtimer > 0)
 	{
-		//std::string mess[4] = { "GO!","1","2","3" };
-		const int numw = 150;
-		const int numh = 200;
-		if ((int)cdtimer < 4)
-			DrawExtendGraph(WIN_WIDTH/2-numw/2, WIN_HEIGHT/2-numh/2, 
-				            WIN_WIDTH / 2 + numw / 2, WIN_HEIGHT / 2 + numh / 2, hCountImage[(int)cdtimer], TRUE);
-			//DrawFormatString(WIN_WIDTH / 2, WIN_HEIGHT / 2, GetColor(255, 0, 0), "%s", mess[(int)cdtimer].c_str());
+		ReadyCount = (int)cdtimer;
 		cdtimer = cdtimer - delta;
 	}
 	else
@@ -179,16 +165,68 @@ void Snake::InitUpdate(float delta)
 	}
 }
 
-void Snake::Draw()
+void Snake::Draw(float delta)
+{
+	switch (sstate)
+	{
+	case INIT:
+		InitDraw(delta);
+		break;
+	case PLAY:
+		PlayDraw(delta);
+		break;
+	case DEATH:
+		DeathDraw(delta);
+		break;
+	case STOP:
+		break;
+	}
+
+}
+
+void Snake::PlayDraw(float delta)
 {
 	if (sstate == STOP)
 		return;
 	for (auto& itr : body)
 	{
 		pos p = itr.GetPosition();
-		if(!deathBlend)
+		DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 255, 0), TRUE);
+		DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 0, 255), FALSE);
+		//DrawFormatString(20, 80, GetColor(0, 0, 0), "%d", sstate);
+	}
+}
+
+void Snake::DeathDraw(float delta)
+{
+	if (sstate == STOP)
+		return;
+	for (auto& itr : body)
+	{
+		pos p = itr.GetPosition();
+		if (!deathBlend)
 			DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 255, 0), TRUE);
 		DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 0, 255), FALSE);
 		//DrawFormatString(20, 80, GetColor(0, 0, 0), "%d", sstate);
 	}
+}
+
+void Snake::InitDraw(float delta)
+{
+	for (auto& itr : body)
+	{
+		pos p = itr.GetPosition();
+
+		DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 255, 0), TRUE);
+		DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 0, 255), FALSE);
+		//DrawFormatString(20, 80, GetColor(0, 0, 0), "%d", sstate);
+				//std::string mess[4] = { "GO!","1","2","3" };
+
+		//DrawFormatString(WIN_WIDTH / 2, WIN_HEIGHT / 2, GetColor(255, 0, 0), "%s", mess[(int)cdtimer].c_str());
+
+	}
+	const int numw = 150;
+	const int numh = 200;
+	DrawExtendGraph(WIN_WIDTH / 2 - numw / 2, WIN_HEIGHT / 2 - numh / 2,
+					WIN_WIDTH / 2 + numw / 2, WIN_HEIGHT / 2 + numh / 2, hCountImage[ReadyCount], TRUE);
 }

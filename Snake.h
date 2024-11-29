@@ -20,12 +20,20 @@ public:
 	void Eat() { isAte = true; }
 	void AddBody(DIR dir);
 	void Move();
+	//全体のアップデート
 	void Update(float delta);
+	//各場面のUpdate
 	void PlayUpdate(float delta);
 	void DeathUpdate(float delta);
 	void InitUpdate(float delta);
-	void Draw();
-	DIR GetFwrdDir() { body.front().GetFoward(); };
+	//全体のDraw
+	void Draw(float delta);
+	//各場面のDraw
+	void PlayDraw(float delta);
+	void DeathDraw(float delta);
+	void InitDraw(float delta);
+	pos GetHeadPos() { return body.front().GetPosition(); }
+	DIR GetFwrdDir() { return body.front().GetFoward(); };
 
 };
 
