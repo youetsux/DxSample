@@ -14,6 +14,7 @@ class Game
 	GAMESTATE gs;
 	std::vector<pos> StageDat_;
 public:
+	int score;
 	Game();
 	~Game();
 	void Init();

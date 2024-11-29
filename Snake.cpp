@@ -7,11 +7,26 @@ namespace {
 	int hCountImage[4]{ -1,-1,-1,-1 };
 	pos dirs[] = { {0,-1},{-1, 0}, {0, 1}, {1, 0}, {0, 0} };
 	int ReadyCount = -1;
+	float deathCount = 0;
 }
 
 
 Snake::Snake()
 {
+	//for (int i = 0; i < 5; i++)
+	//{
+	//	Sbody bd;
+	//	bd.SetPosition(10 - i, 10);
+	//	bd.SetForward(RIGHT);
+	//	body.push_back(bd);
+	//}
+
+}
+
+
+void Snake::Init()
+{
+	body.clear();
 	for (int i = 0; i < 5; i++)
 	{
 		Sbody bd;
@@ -19,18 +34,14 @@ Snake::Snake()
 		bd.SetForward(RIGHT);
 		body.push_back(bd);
 	}
-	sstate = INIT;
-	sdelta = 0;
-	isAte = false;
-}
-
-
-void Snake::Init()
-{
 	hCountImage[0] = LoadGraph("Image\\go.png");
 	hCountImage[1] = LoadGraph("Image\\ichi.png");
 	hCountImage[2] = LoadGraph("Image\\ni.png");
 	hCountImage[3] = LoadGraph("Image\\san.png");
+	sstate = INIT;
+	sdelta = 0;
+	isAte = false;
+	isDead = false;
 }
 //Ž©•ª‚ª“®‚¢‚½‚ ‚Æ‚É‚PŒÂ‘‚¦‚é
 void Snake::AddBody(DIR dir)
@@ -84,7 +95,7 @@ void Snake::PlayUpdate(float delta)
 	if (inputDir != b.GetBakward())
 		b.SetForward(inputDir);
 
-	const float refreshRate = 0.2f;
+	const float refreshRate = 0.15f;
 	//‚Ö‚Ñ‚ð‘O‚Éi‚ß‚é
 	if (sdelta > refreshRate)
 	{
@@ -133,7 +144,7 @@ void Snake::DeathUpdate(float delta)
 		blink = blink + delta;
 		sdelta = sdelta + delta;
 	}
-	else if (sdelta < 4.0f)
+	else if (sdelta < 3.0f)
 	{
 		deathBlend = false;
 		for (int i = 0; i < body.size(); i++)
@@ -147,6 +158,7 @@ void Snake::DeathUpdate(float delta)
 	else
 	{
 		sstate = STOP;
+		isDead = true;
 	}
 }
 //Draw‚ÆUpdate‚²‚Á‚¿‚á‚É‚È‚Á‚Ä‚é
@@ -192,9 +204,10 @@ void Snake::PlayDraw(float delta)
 		return;
 	for (auto& itr : body)
 	{
-		pos p = itr.GetPosition();
-		DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 255, 0), TRUE);
-		DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 0, 255), FALSE);
+		pos p1 = { itr.GetPosition().x*BOXSIZE + DRAWMGN_W, itr.GetPosition().y * BOXSIZE +DRAWMGN_H};
+		pos p2 = { (itr.GetPosition().x+1) * BOXSIZE + DRAWMGN_W, (itr.GetPosition().y+1) * BOXSIZE + DRAWMGN_H };
+		DrawBox(p1.x,p1.y,p2.x,p2.y, GetColor(0, 255, 0), TRUE);
+		DrawBox(p1.x, p1.y, p2.x, p2.y, GetColor(0, 0, 255), FALSE);
 		//DrawFormatString(20, 80, GetColor(0, 0, 0), "%d", sstate);
 	}
 }
@@ -205,10 +218,11 @@ void Snake::DeathDraw(float delta)
 		return;
 	for (auto& itr : body)
 	{
-		pos p = itr.GetPosition();
-		if (!deathBlend)
-			DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 255, 0), TRUE);
-		DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 0, 255), FALSE);
+		pos p1 = { itr.GetPosition().x * BOXSIZE + DRAWMGN_W, itr.GetPosition().y * BOXSIZE + DRAWMGN_H };
+		pos p2 = { (itr.GetPosition().x + 1) * BOXSIZE + DRAWMGN_W, (itr.GetPosition().y + 1) * BOXSIZE + DRAWMGN_H };
+		if(!deathBlend)
+			DrawBox(p1.x, p1.y, p2.x, p2.y, GetColor(0, 255, 0), TRUE);
+		DrawBox(p1.x, p1.y, p2.x, p2.y, GetColor(0, 0, 255), FALSE);
 		//DrawFormatString(20, 80, GetColor(0, 0, 0), "%d", sstate);
 	}
 }
@@ -217,10 +231,10 @@ void Snake::InitDraw(float delta)
 {
 	for (auto& itr : body)
 	{
-		pos p = itr.GetPosition();
-
-		DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 255, 0), TRUE);
-		DrawBox(p.x * BOXSIZE, p.y * BOXSIZE, (p.x + 1) * BOXSIZE, (p.y + 1) * BOXSIZE, GetColor(0, 0, 255), FALSE);
+		pos p1 = { itr.GetPosition().x * BOXSIZE + DRAWMGN_W, itr.GetPosition().y * BOXSIZE + DRAWMGN_H };
+		pos p2 = { (itr.GetPosition().x + 1) * BOXSIZE + DRAWMGN_W, (itr.GetPosition().y + 1) * BOXSIZE + DRAWMGN_H };
+		DrawBox(p1.x, p1.y, p2.x, p2.y, GetColor(0, 255, 0), TRUE);
+		DrawBox(p1.x, p1.y, p2.x, p2.y, GetColor(0, 0, 255), FALSE);
 		//DrawFormatString(20, 80, GetColor(0, 0, 0), "%d", sstate);
 				//std::string mess[4] = { "GO!","1","2","3" };
 

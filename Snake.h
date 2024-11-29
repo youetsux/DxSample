@@ -14,6 +14,7 @@ class Snake
 	float sdelta;//ŽÖ‚Ìƒ¢t
 	bool isAte;
 	bool deathBlend = false;
+	bool isDead;
 public:
 	Snake();
 	void Init();
@@ -35,5 +36,7 @@ public:
 	pos GetHeadPos() { return body.front().GetPosition(); }
 	DIR GetFwrdDir() { return body.front().GetFoward(); };
 
+	void SetDeathState() { sstate = DEATH; }
+	bool IsDead() { return isDead; }
 };
 

@@ -15,8 +15,8 @@ void Fluits::SetFluits()
 {
 	if (isActive == true)
 		return;
-	int rw = rand() % STAGEW;
-	int rh = rand() % STAGEH;
+	int rw = rand() % (STAGEW-2)+1;
+	int rh = rand() % (STAGEH-2)+1;
 	SetPosition(rw, rh);
 	SetType();
 	isActive = true;
@@ -32,8 +32,8 @@ void Fluits::Update()
 }
 void Fluits::Draw()
 {
-	DrawBox(position.x * BOXSIZE, position.y * BOXSIZE, (position.x + 1) * BOXSIZE, (position.y + 1) * BOXSIZE,
-		color, TRUE);
-	DrawBox(position.x * BOXSIZE, position.y * BOXSIZE, (position.x + 1) * BOXSIZE, (position.y + 1) * BOXSIZE,
-		GetColor(0, 0, 0), FALSE);
+	pos p1{ position.x * BOXSIZE + DRAWMGN_W, position.y * BOXSIZE + DRAWMGN_H };
+	pos p2{ (position.x + 1) * BOXSIZE + DRAWMGN_W, (position.y + 1) * BOXSIZE + DRAWMGN_H };
+	DrawBox(p1.x,p1.y,p2.x,p2.y,color, TRUE);
+	DrawBox(p1.x, p1.y, p2.x, p2.y, GetColor(0, 0, 0), FALSE);
 }

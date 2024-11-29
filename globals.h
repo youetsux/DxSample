@@ -21,9 +21,11 @@ namespace
 	float deltaTime;
 
 	int BOXSIZE{ 30 };
-
-	const int STAGEW = WIN_WIDTH / BOXSIZE;
-	const int STAGEH = WIN_HEIGHT / BOXSIZE;
-
+	const int STAGEMGN_W = 2;
+	const int STAGEMGN_H = 4;
+	const int STAGEW = WIN_WIDTH / BOXSIZE - STAGEMGN_W;
+	const int STAGEH = WIN_HEIGHT / BOXSIZE - STAGEMGN_H;
+	const int DRAWMGN_W = STAGEMGN_W * BOXSIZE / 2;//マージンとって真ん中に描画
+	const int DRAWMGN_H = STAGEMGN_H * BOXSIZE;//スコア表示のために上を開ける
 }
 
