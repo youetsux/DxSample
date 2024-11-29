@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+#include "globals.h"
 
 class Snake;
 class Fluits;
@@ -10,6 +12,7 @@ class Game
 		TITLE, START, PLAY, GAMEOVER, MAXSTATE
 	};
 	GAMESTATE gs;
+	std::vector<pos> StageDat_;
 public:
 	Game();
 	~Game();

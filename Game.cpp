@@ -29,6 +29,8 @@ void Game::Init()
 	hTitleImage = LoadGraph("Image\\Title.png");
 	s.Init();
 
+	StageDat_;//壁のデータだけ入れる（1年生には、全部のデータを配列にした方がわかりやすいかも
+
 	gs = TITLE;
 	f.Init();
 }

@@ -8,6 +8,8 @@ namespace {
 	pos dirs[] = { {0,-1},{-1, 0}, {0, 1}, {1, 0}, {0, 0} };
 	int ReadyCount = -1;
 }
+
+
 Snake::Snake()
 {
 	for (int i = 0; i < 5; i++)
@@ -131,7 +133,7 @@ void Snake::DeathUpdate(float delta)
 		blink = blink + delta;
 		sdelta = sdelta + delta;
 	}
-	else if (sdelta < 5.0f)
+	else if (sdelta < 4.0f)
 	{
 		deathBlend = false;
 		for (int i = 0; i < body.size(); i++)
@@ -227,6 +229,8 @@ void Snake::InitDraw(float delta)
 	}
 	const int numw = 150;
 	const int numh = 200;
-	DrawExtendGraph(WIN_WIDTH / 2 - numw / 2, WIN_HEIGHT / 2 - numh / 2,
-					WIN_WIDTH / 2 + numw / 2, WIN_HEIGHT / 2 + numh / 2, hCountImage[ReadyCount], TRUE);
+	pos isize;
+	GetGraphSize(hCountImage[ReadyCount], &isize.x, &isize.y);
+	DrawExtendGraph(WIN_WIDTH / 2 - isize.x / 2, WIN_HEIGHT / 2 - isize.y / 2,
+					WIN_WIDTH / 2 + isize.x / 2, WIN_HEIGHT / 2 + isize.y / 2, hCountImage[ReadyCount], TRUE);
 }
