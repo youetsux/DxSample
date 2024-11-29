@@ -51,6 +51,7 @@ void Game::Init()
 	}
 	gs = TITLE;
 	f.Init();
+	score = 0;
 	stime = 0;
 }
 
@@ -194,6 +195,7 @@ void Game::PlayUpdate(float delta)
 	}
 	if (f.position.x == s.GetHeadPos().x && f.position.y == s.GetHeadPos().y)
 	{
+		score++;
 		f.Eat();
 		s.Eat();
 	}
@@ -239,6 +241,9 @@ void Game::DrawStage(float delta)
 		DrawBox(p1.x, p1.y, p2.x, p2.y, GetColor(181, 82, 51), TRUE);
 		DrawBox(p1.x, p1.y, p2.x, p2.y, GetColor(0, 0, 0), FALSE);
 	}
+	SetFontSize(30);
+	DrawFormatString(600, 80, GetColor(0,0,0),"SCORE %03d", score);
+	
 }
 
 void Game::GameOverUpdate(float delta)
