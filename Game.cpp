@@ -260,7 +260,8 @@ void Game::GameOverDraw(float delta)
 	const int HMGN{ 100 };
 	pos gsize;
 	GetGraphSize(hGameOverImage, &gsize.x, &gsize.y);
-	pos p = { WIN_WIDTH / 2-gsize.x/2, WIN_HEIGHT / 2-gsize.y/2 - HMGN };
-	DrawGraph(p.x, p.y, hGameOverImage, TRUE);
+	pos DrawSize{ 500*(gsize.y / (float)gsize.x),500 };
+	pos p = { WIN_WIDTH / 2-DrawSize.x/2, WIN_HEIGHT / 2-DrawSize.y/2 - HMGN };
+	DrawExtendGraph(p.x, p.y,p.x+500,p.y+500, hGameOverImage, TRUE);
 }
 
