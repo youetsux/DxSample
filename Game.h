@@ -13,6 +13,8 @@ class Game
 	};
 	GAMESTATE gs;
 	std::vector<pos> StageDat_;
+	Snake *s;
+	Fluits *f;
 public:
 	int score;
 	Game();

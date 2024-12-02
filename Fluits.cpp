@@ -1,7 +1,10 @@
 #include "Fluits.h"
+#include "Snake.h"
 
-Fluits::Fluits() 
-	:isActive(false), fcolor({ GetColor(255, 50,50), GetColor(187, 85, 97),GetColor(255,225,53), GetColor(224,222,148) })
+
+Fluits::Fluits(Game *g) 
+	:isActive(false), fcolor({ GetColor(255, 50,50), GetColor(187, 85, 97),GetColor(255,225,53), GetColor(224,222,148) }),
+	 game(g)
 {
 }
 Fluits::~Fluits() {}
@@ -11,6 +14,7 @@ void Fluits::SetType() {
 	color = fcolor[type];
 }
 void Fluits::SetPosition(int x, int y) { position.x = x; position.y = y; }
+
 void Fluits::SetFluits()
 {
 	if (isActive == true)

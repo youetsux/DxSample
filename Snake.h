@@ -3,6 +3,8 @@
 #include "sbody.h"
 #include <deque>
 
+class Game;
+
 
 class Snake
 {
@@ -15,8 +17,10 @@ class Snake
 	bool isAte;
 	bool deathBlend = false;
 	bool isDead;
+	Game* game;
 public:
-	Snake();
+	Snake(Game *g);
+	~Snake() {};
 	void Init();
 	void Eat() { isAte = true; }
 	void AddBody(DIR dir);

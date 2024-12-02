@@ -2,6 +2,7 @@
 #include "Snake.h"
 #include "Input.h"
 #include <string>
+#include "Game.h"
 
 namespace {
 	int hCountImage[4]{ -1,-1,-1,-1 };
@@ -12,7 +13,8 @@ namespace {
 }
 
 
-Snake::Snake()
+Snake::Snake(Game *g)
+	:game(g)
 {
 	//for (int i = 0; i < 5; i++)
 	//{
