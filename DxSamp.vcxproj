@@ -144,6 +144,7 @@
     <ClCompile Include="theMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="easingfunc.h" />
     <ClInclude Include="Fluits.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="globals.h" />

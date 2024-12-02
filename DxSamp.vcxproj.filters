@@ -53,5 +53,8 @@
     <ClInclude Include="Game.h">
       <Filter>ソース ファイル\ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="easingfunc.h">
+      <Filter>ソース ファイル\ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

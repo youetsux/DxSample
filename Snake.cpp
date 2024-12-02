@@ -8,6 +8,7 @@ namespace {
 	pos dirs[] = { {0,-1},{-1, 0}, {0, 1}, {1, 0}, {0, 0} };
 	int ReadyCount = -1;
 	float deathCount = 0;
+	bool initflag = false;
 }
 
 
@@ -42,6 +43,8 @@ void Snake::Init()
 	sdelta = 0;
 	isAte = false;
 	isDead = false;
+	ReadyCount = -1;
+	initflag = true;
 }
 //é©ï™Ç™ìÆÇ¢ÇΩÇ†Ç∆Ç…ÇPå¬ëùÇ¶ÇÈ
 void Snake::AddBody(DIR dir)
@@ -165,6 +168,10 @@ void Snake::DeathUpdate(float delta)
 void Snake::InitUpdate(float delta)
 {
 	static float cdtimer = 4.0f;
+	if (initflag) {
+		cdtimer = 4.0f;
+		initflag = false;
+	}
 	if (sstate == STOP)
 		return;
 	
@@ -247,4 +254,16 @@ void Snake::InitDraw(float delta)
 	GetGraphSize(hCountImage[ReadyCount], &isize.x, &isize.y);
 	DrawExtendGraph(WIN_WIDTH / 2 - isize.x / 2, WIN_HEIGHT / 2 - isize.y / 2,
 					WIN_WIDTH / 2 + isize.x / 2, WIN_HEIGHT / 2 + isize.y / 2, hCountImage[ReadyCount], TRUE);
+}
+
+bool Snake::IsCrossBody(pos p)
+{
+	for (auto itr : body)
+	{
+		if (itr.GetPosition().x == p.x && itr.GetPosition().y == p.y)
+		{
+			return true;
+		}
+	}
+	return false;
 }

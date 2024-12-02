@@ -36,6 +36,8 @@ public:
 	pos GetHeadPos() { return body.front().GetPosition(); }
 	DIR GetFwrdDir() { return body.front().GetFoward(); };
 
+	bool IsCrossBody(pos p);
+
 	void SetDeathState() { sstate = DEATH; }
 	bool IsDead() { return isDead; }
 };

@@ -5,6 +5,7 @@
 #include "globals.h"
 #include "Snake.h"
 #include "Fluits.h"
+#include "easingfunc.h"
 
 
 namespace
@@ -16,6 +17,10 @@ namespace
 	float stime = 0;
 	float sBlinkTimer = 0;
 	int hGameOverImage = -1;
+	int hiScore = 0;
+	int lastScore = 0;
+	int CurrentScore = 0;
+	int gameNum = 0;
 }
 
 
@@ -53,6 +58,8 @@ void Game::Init()
 	f.Init();
 	score = 0;
 	stime = 0;
+
+	gameNum++;
 }
 
 void Game::Update(float delta)
@@ -101,6 +108,8 @@ void Game::TitleUpdate(float delta)
 {
 	if (Input::IsKeyDown(KEY_INPUT_SPACE))
 	{
+		s.Init();
+		f.Init();
 		gs = START;
 	}
 }
@@ -198,6 +207,12 @@ void Game::PlayUpdate(float delta)
 		score++;
 		f.Eat();
 		s.Eat();
+		
+		while(s.IsCrossBody(f.position))
+		{
+			f.SetFluits();
+		}
+
 	}
 	if (s.IsDead())
 	{
@@ -242,26 +257,69 @@ void Game::DrawStage(float delta)
 		DrawBox(p1.x, p1.y, p2.x, p2.y, GetColor(0, 0, 0), FALSE);
 	}
 	SetFontSize(30);
-	DrawFormatString(600, 80, GetColor(0,0,0),"SCORE %03d", score);
-	
+	DrawFormatString(600, 80, GetColor(0,0,0),"CURRENT SCORE %03d", score);
+	ChangeFontType(DX_FONTTYPE_EDGE);
+	DrawFormatString(200, 40, GetColor(255, 0, 0), "  HI SCORE %03d", hiScore);
+	DrawFormatString(200, 80, GetColor(255, 0, 0), "LAST SCORE %03d", lastScore);
+	ChangeFontType(DX_FONTTYPE_NORMAL);
 }
 
 void Game::GameOverUpdate(float delta)
 {
-	if (Input::IsKeepKeyDown(KEY_INPUT_SPACE))
+
+	if (score > hiScore)
+		hiScore = score;
+	if (CheckHitKeyAll())
 	{
+		if (gameNum > 0)
+			lastScore = score;
 		gs = TITLE;
 		Init();
 	}
+
 }
 
 void Game::GameOverDraw(float delta)
 {
+	static float dt = 0.0f;
+	const float extime = 2.0f;
 	const int HMGN{ 100 };
+	float maxSize = 500;
+	float fixtime = 0;
+	const int col[] = { GetColor(255,0,0),
+						GetColor(255,165,0),
+						GetColor(255,255,0),
+						GetColor(0,128,0),
+						GetColor(0,255,255),
+						GetColor(0,0,255),
+						GetColor(128,0,128)
+	};
+
+
+	float scale = Util::EaseFunc["OutBounce"](std::clamp(dt/2.0f, 0.0f, 1.0f));
 	pos gsize;
+	maxSize = maxSize * scale;
 	GetGraphSize(hGameOverImage, &gsize.x, &gsize.y);
-	pos DrawSize{ 500*(gsize.y / (float)gsize.x),500 };
+	pos DrawSize{ maxSize*(gsize.y / (float)gsize.x),maxSize };
 	pos p = { WIN_WIDTH / 2-DrawSize.x/2, WIN_HEIGHT / 2-DrawSize.y/2 - HMGN };
-	DrawExtendGraph(p.x, p.y,p.x+500,p.y+500, hGameOverImage, TRUE);
+	DrawExtendGraph(p.x, p.y, p.x+ maxSize, p.y+ maxSize, hGameOverImage, TRUE);
+
+
+	
+	SetFontSize(40);
+	ChangeFontType(DX_FONTTYPE_EDGE);
+	DrawFormatString(300, 600, GetColor(255, 0, 0), "     HI SCORE %03d", hiScore);
+	//ChangeFontType(DX_FONTTYPE_EDGE);
+	DrawFormatString(300, 650, GetColor(255, 255, 255),   "   LAST SCORE %03d", lastScore);
+	//ChangeFontType(DX_FONTTYPE_EDGE);
+	DrawFormatString(300, 700, GetColor(255, 255, 255),   "CURRENT SCORE %03d", score);
+
+	//ChangeFontType(DX_FONTTYPE_NORMAL);
+	if (dt > extime)
+	{
+		
+		DrawString(300, 540, "Push Any Key to Title", GetColor(0, 255, 0),col[((int)dt)%7]);
+	}
+	dt = dt + delta;
 }
 
