@@ -1,9 +1,12 @@
 #pragma once
 #include <vector>
 #include "globals.h"
+#include "Fluits.h"
+#include "Snake.h"
 
-class Snake;
-class Fluits;
+
+//class Snake;
+//class Fluits;
 
 class Game
 {
@@ -13,6 +16,8 @@ class Game
 	};
 	GAMESTATE gs;
 	std::vector<pos> StageDat_;
+	Snake snake;
+	Fluits fluits;
 public:
 	int score;
 	Game();

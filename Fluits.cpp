@@ -19,16 +19,17 @@ void Fluits::SetFluits()
 	int rh = rand() % (STAGEH-2)+1;
 	SetPosition(rw, rh);
 	SetType();
+}
+void Fluits::fix()
+{
 	isActive = true;
 }
+
+
 void Fluits::Eat() { isActive = false; }
-void Fluits::Init() { SetFluits(); }
+void Fluits::Init() { isActive = false; }
 void Fluits::Update()
 {
-	if (!isActive)
-	{
-		SetFluits();
-	}
 }
 void Fluits::Draw()
 {

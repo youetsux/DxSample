@@ -3,6 +3,8 @@
 #include <DxLib.h>
 #include "globals.h"
 
+
+
 class Fluits
 {
 	enum FLUIT_TYPE
@@ -25,6 +27,7 @@ public:
 	void SetPosition(int x, int y); 
 	bool isActive;
 	void SetFluits();
+	void fix();
 	void Eat(); 
 	void Init(); 
 	void Update();

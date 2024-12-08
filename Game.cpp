@@ -10,8 +10,8 @@
 
 namespace
 {
-	Snake s;
-	Fluits f;
+	//Snake s;
+	//Fluits f;
 	int hTitleImage = -1;
 	float startTimer = 0;
 	float stime = 0;
@@ -39,7 +39,7 @@ void Game::Init()
 		hTitleImage = LoadGraph("Image\\Title.png");
 	if (hGameOverImage < 0)
 		hGameOverImage = LoadGraph("Image\\gameover.png");
-	s.Init();
+	snake.Init();
 
 	StageDat_.clear();//壁のデータだけ入れる（1年生には、全部のデータを配列にした方がわかりやすいかも
 	for (int j = 0; j < STAGEH; j++)
@@ -55,7 +55,14 @@ void Game::Init()
 		}
 	}
 	gs = TITLE;
-	f.Init();
+	fluits.Init();
+	fluits.SetFluits();
+	while (snake.IsCrossBody(fluits.position))
+	{
+		fluits.SetFluits();
+		fluits.fix();
+	}
+
 	score = 0;
 	stime = 0;
 
@@ -108,8 +115,14 @@ void Game::TitleUpdate(float delta)
 {
 	if (Input::IsKeyDown(KEY_INPUT_SPACE))
 	{
-		s.Init();
-		f.Init();
+		snake.Init();
+		fluits.Init();
+
+		while (snake.IsCrossBody(fluits.position))
+		{
+			fluits.SetFluits();
+			fluits.fix();
+		}
 		gs = START;
 	}
 }
@@ -192,29 +205,30 @@ void Game::StartDraw(float delta)
 void Game::PlayUpdate(float delta)
 {
 
-	f.Update();
-	s.Update(delta);
+	fluits.Update();
+	snake.Update(delta);
 	for (auto itr : StageDat_)
 	{
-		pos spos = s.GetHeadPos();
+		pos spos = snake.GetHeadPos();
 		if (spos.x == itr.x && spos.y == itr.y)
 		{
-			s.SetDeathState();
+			snake.SetDeathState();
 		}
 	}
-	if (f.position.x == s.GetHeadPos().x && f.position.y == s.GetHeadPos().y)
+	if (fluits.position.x == snake.GetHeadPos().x && fluits.position.y == snake.GetHeadPos().y)
 	{
 		score++;
-		f.Eat();
-		s.Eat();
-		
-		while(s.IsCrossBody(f.position))
+		fluits.Eat();
+		snake.Eat();
+		fluits.SetFluits();
+		while(snake.IsCrossBody(fluits.position))
 		{
-			f.SetFluits();
+			fluits.SetFluits();
+			fluits.fix();
 		}
 
 	}
-	if (s.IsDead())
+	if (snake.IsDead())
 	{
 		gs = GAMEOVER;
 	}
@@ -224,8 +238,8 @@ void Game::PlayDraw(float delta)
 {
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	DrawStage(delta);
-	f.Draw();
-	s.Draw(delta);
+	fluits.Draw();
+	snake.Draw(delta);
 
 }
 
